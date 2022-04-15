@@ -12,7 +12,7 @@ import {
 import config from "../utils/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const RegisterScreen = ({ navigation, setSignedIn }) => {
+const RegisterScreen = ({ setSignedIn }) => {
     const [userName, setUserName] = useState("");
     const [userEmail, setUserEmail] = useState("");
     const [userAge, setUserAge] = useState("");
@@ -41,7 +41,7 @@ const RegisterScreen = ({ navigation, setSignedIn }) => {
         setLoading(true);
 
         try {
-            let response = await fetch(config.ip + "register", {
+            let response = await fetch(config.auth_ip + "register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -56,21 +56,15 @@ const RegisterScreen = ({ navigation, setSignedIn }) => {
             let responseJson = await response.status;
             console.log(responseJson);
             if (responseJson == 200) {
-                console.log("User is successfully created but navigation needs setting up")
+                console.log("User is created and updated in database")
                 setLoading(false);
                 setSignedIn(true);
                 if (responseJson) {
                     AsyncStorage.setItem("user_id", userName);
-                    navigation.navigate("DocPick");
                 } else {
                     console.log("Please check your email id or password");
                 }
             }
-            // else if (responseJson == 500) {
-            //     alert("Server Error!!");
-            // } else {
-            //     alert("Some other error !!");
-            // }
         } catch (error) {
             console.error(error);
         }

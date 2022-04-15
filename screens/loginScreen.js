@@ -13,7 +13,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import config from "../utils/config";
 
-const LoginScreen = ( {setSignedIn} ) => {
+const LoginScreen = ( {navigation, setSignedIn} ) => {
     const [userName, setUserName] = useState("");
     const [userPassword, setUserPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -30,21 +30,6 @@ const LoginScreen = ( {setSignedIn} ) => {
             return;
         }
         setLoading(true);
-        // let formBody = [];
-        // for (let key in dataToSend) {
-        //     let encodedKey = encodeURIComponent(key);
-        //     let encodedValue = encodeURIComponent(dataToSend[key]);
-        //     formBody.push(encodedKey + "=" + encodedValue);
-        // }
-        // formBody = formBody.join("&");
-
-        // var xx = new FormData();
-        // xx.append("file", {
-        //     email: userEmail,
-        //     password: userPassword,
-        // });
-        // console.log(xx);
-
         try {
             console.log(userName, userPassword);
             let response = await fetch(config.auth_ip + "login", {
