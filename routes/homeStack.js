@@ -3,9 +3,9 @@ import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from '../screens/homescreen';
-import DiseaseDetection from '../screens/diseaseDetection';
-import CropRecommendation from '../screens/cropRecommendation';
-import FertilizerRecommendation from '../screens/fertilizerRecommendation';
+import MobileCaptured from '../screens/mobile';
+import GPS from '../screens/satellite';
+import Image_GPS from '../screens/satellite_mobile';
 
 const HomeStack = () => {
     const Stack = createStackNavigator();
@@ -14,9 +14,9 @@ const HomeStack = () => {
             screenOptions={{headerShown:false}}
             >
                 <Stack.Screen name="Home" component={HomeScreen} />
-                <Stack.Screen name="diseaseDetection" component={DiseaseDetection} />
-                <Stack.Screen name="cropRecommendation" component={CropRecommendation} />
-                <Stack.Screen name="fertilizerRecommendation" component={FertilizerRecommendation} />
+                <Stack.Screen name="mobile" component={MobileCaptured} />
+                <Stack.Screen name="satellite" component={GPS} />
+                <Stack.Screen name="satellite_mobile" component={Image_GPS} />
             </Stack.Navigator>
     )
 }
