@@ -1,9 +1,9 @@
+const ip = "192.168.1.16"
+const auth_port = 1111
+const upload_port = 8010
 const config={
-    "auth_ip": "http://192.168.29.54:1111/", // home
-    "upload_ip": "http://192.168.29.54:8010/", // home
-    // "auth_ip": "http://172.20.10.2:1111/", // mobile
-    // "upload_ip": "http://172.20.10.2:8000/",// mobile
-    // "ip": "http://192.168.1.56:1111/", // hostel
+    "auth_ip": `http://${ip}:${auth_port}/`,
+    "upload_ip": `http://${ip}:${upload_port}/`, 
 }
 
 export default config;
