@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, StyleSheet, View, TextInput, Button } from 'react-native';
 
 
-export default function CropRecommendation() {
+export default function GPS() {
   const [count1, setCount1] = useState(0);
   const [count2, setCount2] = useState(0);
   const [count3, setCount3] = useState(0);

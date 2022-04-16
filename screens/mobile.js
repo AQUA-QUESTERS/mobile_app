@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Image, View, Platform, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import config from '../utils/config';
-const DiseaseDetection = ({ route }) => {
+const MobileCaptured = ({ route }) => {
   const [image, setImage] = useState(null);
 
   useEffect(() => {
@@ -109,4 +109,4 @@ const DiseaseDetection = ({ route }) => {
   );
 }
 
-export default DiseaseDetection;
+export default MobileCaptured;
