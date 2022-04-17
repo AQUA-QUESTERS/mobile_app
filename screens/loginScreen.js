@@ -77,7 +77,7 @@ const LoginScreen = ( {navigation, setSignedIn} ) => {
         }} >
             <View style={styles.container}>
                 <StatusBar style="inverted" />
-                <Text style={styles.logo}>Aqua-Questors</Text>
+                <Text style={styles.logo}>Aqua-Questers</Text>
                 <View style={styles.inputView}>
                     <TextInput
                         style={styles.inputText}
