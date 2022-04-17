@@ -1,10 +1,9 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { NavigationContainer } from '@react-navigation/native';
+import { View, Text, Button } from 'react-native';
 import * as React from 'react';
 import AboutScreen from '../screens/about';
-import HomeScreen from '../screens/homescreen';
 import HomeStack from './homeStack';
-
+import Account from '../screens/account';
 
 const Drawer = createDrawerNavigator();
 
@@ -19,6 +18,9 @@ const DrawerNavigator = ({ setSignedIn }) => {
             />
             <Drawer.Screen name="About">
                 {props => <AboutScreen {...props} setSignedIn={setSignedIn} />}
+            </Drawer.Screen>
+            <Drawer.Screen name="Account">
+                {props => <Account {...props} setSignedIn={setSignedIn} />}
             </Drawer.Screen>
         </Drawer.Navigator>
     )
