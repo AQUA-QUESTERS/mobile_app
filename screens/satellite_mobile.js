@@ -1,58 +1,167 @@
-import React, { useState } from 'react';
-import { Text, StyleSheet, View, TextInput, Button } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { Button, Image, View, Platform, ScrollView, Text } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import config from "../utils/config";
+import Constants from 'expo-constants';
+import * as Location from "expo-location";
 
-export default function Image_GPS() {
-  const [count1, setCount1] = useState(0);
-  const [count2, setCount2] = useState(0);
-  const [count3, setCount3] = useState(0);
-  const [count4, setCount4] = useState(0);
-  const [count5, setCount5] = useState(0);
+const Image_GPS = ({ route }) => {
+  const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== "web") {
+        const { status } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+          alert("camera roll permissions needed");
+        }
+      }
+    })();
+  }, []);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      // aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+  const useLocation = () => {
+    const [location, setLocation] = useState();
+
+    const getLocation = async () => {
+      try {
+        const { granted } = await Location.requestPermissionsAsync();
+        if (!granted) return;
+        const {
+          coords: { latitude, longitude },
+        } = await Location.getCurrentPositionAsync();
+        setLocation({ latitude, longitude });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    useEffect(() => {
+      getLocation();
+    }, []);
+
+    return location;
+  };
+
+  const uploadToServer = async () => {
+    console.log("in upload server");
+    console.log(image);
+
+    var res = image;
+    let localUri = res;
+    var fileType = localUri.split(".").pop();
+    console.log(fileType);
+    var typeFile;
+    if (fileType == "dcm") {
+      typeFile = "application/dicom";
+    } else if (fileType == "png") {
+      typeFile = "image/png";
+    } else if (fileType == "jpg") {
+      typeFile = "image/jpg";
+    } else {
+      typeFile = "image/jpeg";
+    }
+
+    var data = new FormData();
+    data.append("file", {
+      uri: localUri,
+      type: typeFile,
+    });
+    console.log(data);
+    try {
+      // http://183.82.46.37:1111/fileup --> udaan-super-micro
+      // http://192.168.231.64:1111/fileup --> My local PC
+      // Change below IP with Linux WIFI IPv4 when giving presentation
+      let response = await fetch(config.upload_ip + "upload", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+        },
+        body: data,
+      });
+      let responseJson = await response.status;
+      console.log("File upload status code: ", responseJson);
+      if (responseJson == 200) {
+        alert("File Uploaded !!");
+        setImage(null);
+      } else {
+        alert("Server Error or File not uploadable !!");
+        setImage(null);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <View style={{ flex: 1, justifyContent: "center", backgroundColor: "#fff", alignItems: "center" }}>
-      <View style={{ width: 200, height: 500, backgroundColor: "yellow", padding: 50 }}>
-        <View >
-          <Text >Get informed advice on fertilizer based on soil</Text>
-          <View>
-            <Text>Nitrogen</Text>
-            <TextInput
-              placeholder="Enter the value(Example:50)" onChange={(e) => setCount1(e.target.value())} required />
-            <Text>Phosporous</Text>
-            <TextInput placeholder="Enter the value(Example:50)" onChange={count2 => setCount2(count2)} required />
-            <Text>Potassium</Text>
-            <TextInput placeholder="Enter the value(Example:50)" onChange={count3 => setCount3(count3)} required />
-            <Text>ph level</Text>
-            <TextInput placeholder="Enter the value" onChange={count4 => setCount4(count4)} required />
-            <Text>Rainfall(in mm)</Text>
-            <TextInput placeholder="Enter the value" onChange={count5 => setCount5(count5)} required />
-            <select name="Crop" id="Crop" placeholder="Crop" >
-              <option value="" disabled selected>Select Crop</option>
-              <option value="rice">rice</option>
-              <option value="maize">Maize</option>
-              <option value="chickpea">chickpea</option>
-              <option value="kidneybeans">kidneybeans</option>
-              <option value="pigeonpeas">pigeonpeas</option>
-              <option value="mothbeans">mothbeans</option>
-              <option value="mungbeans">mungbeans</option>
-              <option value="blackgram">blackgram</option>
-              <option value="lentil">lentil</option>
-              <option value="banana">banana</option>
-              <option value="pomegranate">pomegranate</option>
-              <option value="mango">mango</option>
-              <option value="grapes">grapes</option>
-              <option value="watermelon">watermelon</option>
-              <option value="muskmelon">muskmelon</option>
-              <option value="apple">apple</option>
-              <option value="orange">orange</option>
-              <option value="papaya">papaya</option>
-              <option value="coconut">coconut</option>
-              <option value="cotton">cotton</option>
-              <option value="jute">jute</option>
-              <option value="coffee">coffee</option>
-            </select>
-            <Button title="Submit" onPress={() => console.log(count1)} />
+    <View style={{ flex: 1, alignItems: "center", backgroundColor: "black" }}>
+      {image && (
+        <ScrollView>
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              marginTop: 100,
+              justifyContent: "center",
+            }}
+          >
+            <ScrollView
+              horizontal={true}
+              alwaysBounceHorizontal={true}
+              alwaysBounceVertical={true}
+              vertical={true}
+            >
+              <Image
+                source={{
+                  uri: image,
+                }}
+                style={{ width: 400, height: 400 }}
+              />
+            </ScrollView>
           </View>
-        </View>
+        </ScrollView>
+      )}
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          margin: 10,
+          justifyContent: "center",
+        }}
+      >
+        <Button title="Upload" onPress={pickImage} color="coral" />
+      </View>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          margin: 10,
+          justifyContent: "center",
+        }}
+      >
+        <Button
+          title="Upload to Server"
+          onPress={uploadToServer}
+          color="coral"
+        />
       </View>
     </View>
-  )
+  );
 };
+
+export default Image_GPS;
