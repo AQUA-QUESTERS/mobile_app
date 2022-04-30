@@ -1,41 +1,56 @@
-import React, { useState } from 'react';
-import { Text, StyleSheet, View, TextInput, Button } from 'react-native';
+import * as React from 'react';
+import { Text, View, StyleSheet } from 'react-native';
+import Constants from 'expo-constants';
+import * as Location from "expo-location";
 
+import { useEffect, useState } from "react"
 
 export default function GPS() {
-  const [count1, setCount1] = useState(0);
-  const [count2, setCount2] = useState(0);
-  const [count3, setCount3] = useState(0);
-  const [count4, setCount4] = useState(0);
-  const [count5, setCount5] = useState(0);
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", backgroundColor: "#fff", alignItems: "center" }}>
-      <View style={{ width: 200, height: 500, backgroundColor: "yellow", padding: 50 }}>
-        <View >
-          <Text >Find out the most suitable crop to grow in your farm</Text>
-          <View>
-            <Text>Nitrogen</Text>
-            <TextInput
-              placeholder="Enter the value(Example:50)" onChange={(e) => setCount1(e.target.value)} />
-            <Text>Phosporous</Text>
-            <TextInput
-              placeholder="Enter the value(Example:50)" onChange={(e) => setCount2(count2)}
-            />
-            <Text>Potassium</Text>
-            <TextInput
-              placeholder="Enter the value(Example:50)" onChange={(count3) => setCount3(count3)} />
-            <Text>ph level</Text>
-            <TextInput
-              placeholder="Enter the value" onChange={(count4) => setCount4(count4)}
-            />
-            <Text>Rainfall(in mm)</Text>
-            <TextInput
-              placeholder="Enter the value" onChange={(count5) => setCount5(count5)} />
-            <Button title="Submit" onPress={() => console.log(count1)} />
-          </View>
-        </View>
-      </View>
+    <View style={styles.container}>
+      <Text style={styles.paragraph}>
+        {JSON.stringify(useLocation())}
+      </Text>
+      
     </View>
-  )
+  );
+}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingTop: Constants.statusBarHeight,
+    backgroundColor: '#ecf0f1',
+    padding: 8,
+  },
+  paragraph: {
+    margin: 24,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+});
+
+const useLocation = () => {
+  const [location, setLocation] = useState();
+
+  const getLocation = async () => {
+    try {
+      const { granted } = await Location.requestPermissionsAsync();
+      if (!granted) return;
+      const {
+        coords: { latitude, longitude },
+      } = await Location.getCurrentPositionAsync();
+      setLocation({ latitude, longitude });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getLocation();
+  }, []);
+
+  return location;
 };
