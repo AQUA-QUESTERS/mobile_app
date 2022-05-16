@@ -111,6 +111,7 @@
 
 import React, { Component } from "react";
 import { Button, SafeAreaView, StyleSheet, Alert, Text } from "react-native";
+import config from "../utils/config";
 
 //Importing the installed libraries
 import * as FS from "expo-file-system";
@@ -196,7 +197,7 @@ export default class App extends Component {
   toServer = async (mediaFile) => {
     let type = mediaFile.type;
     let schema = "http://";
-    let host = "192.168.1.6";
+    // let host = ip;
     let route = "";
     let port = "8012";
     let url = "";
@@ -204,7 +205,7 @@ export default class App extends Component {
     type === "image"
       ? ((route = "/image"), (content_type = "image/jpeg"))
       : ((route = "/video"), (content_type = "video/mp4"));
-    url = schema + host + ":" + port + route;
+    url = config.flask1_ip;
 
     let response = await FS.uploadAsync(url, mediaFile.uri, {
       headers: {
